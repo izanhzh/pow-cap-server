@@ -44,7 +44,8 @@ builder.Services.AddPowCapServer(options =>
     options.EndpointPrefix = "/api/captcha";
 });
 ```
-      
+
+      
 3. Map CAPTCHA endpoints in Program.cs
 ```csharp
 app.UsePowCapServerEndpoints();
@@ -56,7 +57,7 @@ This will expose the following endpoints:
 - POST /api/captcha/redeem – Redeem a solved CAPTCHA challenge.
 
 
-📐 Integration with Frontend
+## 📐 Integration with Frontend
 please refer to the official documentation of [@cap.js/widget](https://capjs.js.org/guide/widget.html) for instructions on how to embed and configure the CAPTCHA widget in your web application.
 
 Example:
