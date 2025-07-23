@@ -1,0 +1,19 @@
+<Project>
+  <Import Project="..\Directory.Build.props" />
+  <PropertyGroup>
+    <Copyright>Amos Huang</Copyright>
+    <Authors>Amos Huang</Authors>
+    <Version>1.0.0</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/izanhzh/pow-cap-server</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/izanhzh/pow-cap-server.git</RepositoryUrl>
+    <Description>This project is a .NET Core server-side implementation of the open-source project tiagorangel1/cap, based on the Proof-of-Work (PoW) mechanism.</Description>
+    <RootNamespace>PowCapServer</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{0CE312F7-F4DD-4AD2-B8DD-160855E6D7D7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC02BFE-5BBB-4C7A-BF61-CA5F3FAED286}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{AF9947EF-021F-4548-A92B-972141F1D8B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowCapServer.Core", "src\PowCapServer.Core\PowCapServer.Core.csproj", "{273CC12F-BAE7-4185-90BA-59EDD6DBF1B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowCapServer.Test", "test\PowCapServer.Test\PowCapServer.Test.csproj", "{910A53B1-25CB-4912-BF65-1F7789F7E2B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowCapServer.AspNetCore", "src\PowCapServer.AspNetCore\PowCapServer.AspNetCore.csproj", "{0439C8CC-741E-4A3E-AC14-72D12598BE65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "samples\WebApplication1\WebApplication1.csproj", "{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{273CC12F-BAE7-4185-90BA-59EDD6DBF1B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{273CC12F-BAE7-4185-90BA-59EDD6DBF1B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{273CC12F-BAE7-4185-90BA-59EDD6DBF1B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{273CC12F-BAE7-4185-90BA-59EDD6DBF1B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{910A53B1-25CB-4912-BF65-1F7789F7E2B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{910A53B1-25CB-4912-BF65-1F7789F7E2B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{910A53B1-25CB-4912-BF65-1F7789F7E2B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{910A53B1-25CB-4912-BF65-1F7789F7E2B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0439C8CC-741E-4A3E-AC14-72D12598BE65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0439C8CC-741E-4A3E-AC14-72D12598BE65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0439C8CC-741E-4A3E-AC14-72D12598BE65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0439C8CC-741E-4A3E-AC14-72D12598BE65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{273CC12F-BAE7-4185-90BA-59EDD6DBF1B2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{910A53B1-25CB-4912-BF65-1F7789F7E2B9} = {0CE312F7-F4DD-4AD2-B8DD-160855E6D7D7}
+		{0439C8CC-741E-4A3E-AC14-72D12598BE65} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F} = {AF9947EF-021F-4548-A92B-972141F1D8B5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A51D2AD2-3820-441E-8379-D80B37830669}
+	EndGlobalSection
+EndGlobal
