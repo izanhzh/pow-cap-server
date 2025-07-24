@@ -1,0 +1,65 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <cap-widget id="cap" data-cap-api-endpoint="/api/captcha/"></cap-widget>
+</div>
+
+<div class="container mt-5">
+    <h4>Test Token Submission</h4>
+    <form id="tokenForm">
+        <div class="mb-3">
+            <label for="tokenInput" class="form-label">Cap Token</label>
+            <input type="text" class="form-control" id="tokenInput" placeholder="Enter token here" />
+        </div>
+        <button type="button" class="btn btn-primary" onclick="submitToken()">Test Submit Token</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@@cap.js/widget"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+           const widget = document.querySelector("#cap");
+           widget.addEventListener("solve", function (e) {
+               const token = e.detail.token;
+               document.getElementById("tokenInput").value = token;
+           });
+    });
+
+     function submitToken() {
+        const token = document.getElementById("tokenInput").value;
+
+        if (!token) {
+            alert("Please enter or generate a token.");
+            return;
+        }
+
+        fetch('/api/captcha/test-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token: token })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("Success: " + JSON.stringify(data));
+            console.log("Success:", data);
+        })
+        .catch(error => {
+            alert("Error: " + error.message);
+            console.error("Error:", error);
+        });
+    }
+</script>

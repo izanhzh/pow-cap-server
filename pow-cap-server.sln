@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowCapServer.AspNetCore", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "samples\WebApplication1\WebApplication1.csproj", "{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore3_1", "samples\AspNetCore3_1\AspNetCore3_1.csproj", "{918D030A-271C-4E07-99B2-B6D9FC8CA60E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{918D030A-271C-4E07-99B2-B6D9FC8CA60E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{918D030A-271C-4E07-99B2-B6D9FC8CA60E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{918D030A-271C-4E07-99B2-B6D9FC8CA60E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{918D030A-271C-4E07-99B2-B6D9FC8CA60E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{910A53B1-25CB-4912-BF65-1F7789F7E2B9} = {0CE312F7-F4DD-4AD2-B8DD-160855E6D7D7}
 		{0439C8CC-741E-4A3E-AC14-72D12598BE65} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{D3B32DC5-271C-4846-B1E0-76A3C15B5B7F} = {AF9947EF-021F-4548-A92B-972141F1D8B5}
+		{918D030A-271C-4E07-99B2-B6D9FC8CA60E} = {AF9947EF-021F-4548-A92B-972141F1D8B5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A51D2AD2-3820-441E-8379-D80B37830669}
