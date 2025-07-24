@@ -55,7 +55,37 @@ This will expose the following endpoints:
 - POST /api/captcha/redeem – Redeem a solved CAPTCHA challenge.
 
 
-📐 Integration with Frontend
+## 🗃️ Storage and Caching
+By default, PowCapServer uses the `Microsoft.Extensions.Caching.Memory` implementation of `IDistributedCache` to store CAPTCHA-related data in memory. This provides a lightweight, in-memory storage solution that's perfect for single-instance deployments.
+
+For more robust scenarios such as multi-instance deployments or when persistence is required, you can replace the default in-memory cache with other `IDistributedCache` implementations. Popular alternatives include:
+
+- Redis Distributed Cache
+- SQL Server Distributed Cache
+
+To use Redis as an example, first install the required package:
+
+```bash
+dotnet add package Microsoft.Extensions.Caching.StackExchangeRedis
+```
+
+Then configure it in your service registration:
+
+```csharp
+builder.Services.AddPowCapServer();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379"; // Redis server configuration
+    options.InstanceName = "PowCapServer:";
+});
+```
+
+**Important: Call `AddStackExchangeRedisCache` after `AddPowCapServer` to override the default in-memory cache implementation.**
+
+For more information on available `IDistributedCache` implementations, please refer to the [Microsoft Documentation](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed).
+
+
+## 📐 Integration with Frontend
 please refer to the official documentation of [@cap.js/widget](https://capjs.js.org/guide/widget.html) for instructions on how to embed and configure the CAPTCHA widget in your web application.
 
 Example:
