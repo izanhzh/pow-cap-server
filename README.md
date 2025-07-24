@@ -43,7 +43,8 @@ builder.Services.AddPowCapServer(options =>
     options.CaptchaTokenExpiresMs = 300000;
 });
 ```
-      
+
+      
 3. Map CAPTCHA endpoints in Program.cs
 ```csharp
 app.MapPowCapServer();
