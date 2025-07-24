@@ -1,0 +1,34 @@
+template: |
+  ## What's Changed
+
+  {% for category in categories %}
+  ### {{ category.title }}
+  {% for commit in category.commits %}
+  - **{{ commit.commit.message | firstLine }}** ([{{ commit.sha | truncate(7, "" ) }}]({{ commit.html_url }})) by @{{ commit.author.login }}
+  {% endfor %}
+  {% endfor %}
+
+  ## Contributors
+  {% for contributor in contributors %}
+  - [@{{ contributor.login }}]({{ contributor.html_url }})
+  {% endfor %}
+
+categories:
+  - title: "Enhancements"
+    labels:
+      - "enhancement"
+  - title: "Bug Fixes"
+    labels:
+      - "bug"
+  - title: "Documentation"
+    labels:
+      - "documentation"
+  - title: "Refactoring"
+    labels:
+      - "refactor"
+  - title: "Performance Improvements"
+    labels:
+      - "performance"
+  - title: "Chores"
+    labels:
+      - "chore"
