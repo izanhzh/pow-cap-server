@@ -44,7 +44,7 @@ app.MapPost("/api/test-token", async (HttpContext context) =>
 
     // 这里可以调用 ValidateCaptchaToken 验证 token
     var captchaService = context.RequestServices.GetRequiredService<ICaptchaService>();
-    var isValid = await captchaService.ValidateCaptchaToken(token).ConfigureAwait(false);
+    var isValid = await captchaService.ValidateCaptchaTokenAsync(token).ConfigureAwait(false);
 
     if (isValid)
     {

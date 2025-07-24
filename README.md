@@ -123,7 +123,7 @@ public class LoginController : ControllerBase
             return BadRequest("CAPTCHA token is required.");
         }
 
-        var isValid = await _captchaService.ValidateCaptchaToken(request.CaptchaToken, ct);
+        var isValid = await _captchaService.ValidateCaptchaTokenAsync(request.CaptchaToken, ct);
 
         if (!isValid)
         {

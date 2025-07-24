@@ -44,7 +44,7 @@ public class CaptchaController : Controller
         {
             return BadRequest(new { error = "Token is required" });
         }
-        var isValid = await _captchaService.ValidateCaptchaToken(input.Token, cancellationToken).ConfigureAwait(false);
+        var isValid = await _captchaService.ValidateCaptchaTokenAsync(input.Token, cancellationToken).ConfigureAwait(false);
         if (isValid)
         {
             return Ok(new { message = "Token is valid", input.Token });

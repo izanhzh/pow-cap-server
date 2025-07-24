@@ -85,7 +85,7 @@ public class DefaultCaptchaService : ICaptchaService
         return RedeemChallengeResult.Ok($"{id}:{vertoken}", expires);
     }
 
-    public virtual async Task<bool> ValidateCaptchaToken(string captchaToken, CancellationToken cancellationToken = default)
+    public virtual async Task<bool> ValidateCaptchaTokenAsync(string captchaToken, CancellationToken cancellationToken = default)
     {
         await _captchaStore.CleanExpiredTokensAsync(cancellationToken).ConfigureAwait(false);
 

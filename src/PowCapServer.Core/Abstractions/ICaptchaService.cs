@@ -10,5 +10,5 @@ public interface ICaptchaService
 
     Task<RedeemChallengeResult> RedeemChallengeAsync(ChallengeSolution challengeSolution, CancellationToken cancellationToken = default);
 
-    Task<bool> ValidateCaptchaToken(string captchaToken, CancellationToken cancellationToken = default);
+    Task<bool> ValidateCaptchaTokenAsync(string captchaToken, CancellationToken cancellationToken = default);
 }
