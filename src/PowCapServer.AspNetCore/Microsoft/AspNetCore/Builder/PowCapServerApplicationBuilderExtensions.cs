@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using PowCapServer;
 using PowCapServer.Abstractions;
 using PowCapServer.Models;
 
@@ -9,13 +7,13 @@ namespace Microsoft.AspNetCore.Builder;
 
 public static class PowCapServerApplicationBuilderExtensions
 {
-    public static IApplicationBuilder UsePowCapServerEndpoints(this IApplicationBuilder app)
+    public static IApplicationBuilder MapPowCapServer(this IApplicationBuilder app, string endpointPrefix = "/api/captcha")
     {
         app.UseEndpoints(endpoints =>
         {
-            var endpointPrefix = app.ApplicationServices.GetRequiredService<IOptions<PowCapServerOptions>>().Value.EndpointPrefix.Trim('/');
-            var challengeEndpoint = $"/{endpointPrefix}/challenge";
-            var redeemEndpoint = $"/{endpointPrefix}/redeem";
+            var trimmedPrefix = endpointPrefix?.Trim('/');
+            var challengeEndpoint = string.IsNullOrEmpty(trimmedPrefix) ? "/challenge" : $"/{trimmedPrefix}/challenge";
+            var redeemEndpoint = string.IsNullOrEmpty(trimmedPrefix) ? "/redeem" : $"/{trimmedPrefix}/redeem";
 
             endpoints.MapPost(challengeEndpoint, async context =>
             {

@@ -29,7 +29,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
-app.UsePowCapServerEndpoints();
+app.MapPowCapServer();
 app.MapPost("/api/test-token", async (HttpContext context) =>
 {
     using var reader = new StreamReader(context.Request.Body);

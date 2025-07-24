@@ -26,9 +26,4 @@ public class PowCapServerOptions
     /// Time in milliseconds until the captcha token expires
     /// </summary>
     public long CaptchaTokenExpiresMs { get; set; }
-
-    /// <summary>
-    /// Endpoint prefix for request to create a challenge or redeem a challenge
-    /// </summary>
-    public string EndpointPrefix { get; set; } = "/api/captcha";
 }

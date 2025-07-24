@@ -17,7 +17,6 @@ public static class PowCapServerServiceCollectionExtensions
                 options.ChallengeDifficulty = 4;
                 options.ChallengeTokenExpiresMs = 600000;
                 options.CaptchaTokenExpiresMs = 1200000;
-                options.EndpointPrefix = "/api/captcha";
             });
     }
 

@@ -41,13 +41,12 @@ builder.Services.AddPowCapServer(options =>
     options.ChallengeDifficulty = 4;
     options.ChallengeTokenExpiresMs = 60000;
     options.CaptchaTokenExpiresMs = 300000;
-    options.EndpointPrefix = "/api/captcha";
 });
 ```
       
 3. Map CAPTCHA endpoints in Program.cs
 ```csharp
-app.UsePowCapServerEndpoints();
+app.MapPowCapServer();
 ```
 
 This will expose the following endpoints:
