@@ -4,7 +4,7 @@
     <Copyright>Amos Huang</Copyright>
     <Authors>Amos Huang</Authors>
     <Version>1.0.0</Version>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/izanhzh/pow-cap-server</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>

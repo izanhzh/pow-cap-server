@@ -98,7 +98,7 @@ Example:
 You can listen to the solve event to obtain the generated token and proceed with your form submission or API calls.
 
 
-## 🧪 Validate the CAPTCHA Token in a Controller (Optional)
+## 🧪 Validate the CAPTCHA Token in a Controller
 To use the CAPTCHA token validation in a real-world scenario, you can inject `ICaptchaService into any controller (e.g., a LoginController) and verify the token submitted by the client.
 
 Example: Validate Token in LoginController
