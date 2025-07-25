@@ -32,7 +32,7 @@ dotnet add package PowCapServer.AspNetCore
 dotnet add package PowCapServer.AspNetCore
 ```
 
-2. Register services in Program.cs or Startup.cs
+2. Register services
 ```csharp
 builder.Services.AddPowCapServer(options =>
 {
@@ -45,7 +45,7 @@ builder.Services.AddPowCapServer(options =>
 ```
 
       
-3. Map CAPTCHA endpoints in Program.cs
+3. Map CAPTCHA endpoints
 ```csharp
 app.MapPowCapServer();
 ```
