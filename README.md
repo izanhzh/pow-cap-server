@@ -92,8 +92,9 @@ please refer to the official documentation of [@cap.js/widget](https://capjs.js.
 Example:
 
 ```html
-<cap-widget id="cap" data-cap-api-endpoint="/api/captcha/"></cap-widget>
 <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script>
+
+<cap-widget id="cap" data-cap-api-endpoint="/api/captcha/"></cap-widget>
 ```
 You can listen to the solve event to obtain the generated token and proceed with your form submission or API calls.
 
@@ -152,7 +153,7 @@ public class LoginRequest
 Please check the `samples/WebApplication1` folder in the source code. It includes:
 
 - ✅ A full ASP.NET Core web application integrated with PowCapServer
-- ✅ Frontend usage with the <cap-widget>
+- ✅ Frontend usage with the [@cap.js/widget](https://capjs.js.org/guide/widget.html)
 - ✅ Example controller usage for token validation
 
 ## 📚 License
