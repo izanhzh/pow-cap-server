@@ -22,11 +22,11 @@ public class PowCapServerOptions
     /// Returns the configuration for the specified type if it exists in <see cref="TypeConfigs"/>. 
     /// Returns null if <see cref="TypeConfigs"/> is null, the specified type is null, or the type is not found in the dictionary.
     /// </returns>
-    public PowCapConfig? GetPowCapConfig(string? type)
+    public PowCapConfig GetPowCapConfig(string? type)
     {
         if (TypeConfigs == null || type == null || !TypeConfigs.TryGetValue(type, out var config))
         {
-            return null;
+            return Default;
         }
         return config;
     }
