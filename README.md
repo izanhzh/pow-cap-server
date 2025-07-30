@@ -18,8 +18,8 @@ dotnet add package PowCapServer.AspNetCore
 
 
 ## 🧩 Features
-- ✅ Challenge generation (/api/captcha/challenge)
-- ✅ Challenge redemption (/api/captcha/redeem)
+- ✅ Challenge generation (`/api/captcha/challenge` or `/api/captcha/{type}/challenge`)
+- ✅ Challenge redemption (`/api/captcha/redeem` or `/api/captcha/{type}/redeem`)
 - ✅ Token-based CAPTCHA validation
 - ✅ Configurable difficulty, expiration times, and endpoint paths
 - ✅ Built-in token cleanup for expired challenges
@@ -36,15 +36,37 @@ dotnet add package PowCapServer.AspNetCore
 ```csharp
 builder.Services.AddPowCapServer(options =>
 {
-    options.ChallengeCount = 5;
-    options.ChallengeSize = 10;
-    options.ChallengeDifficulty = 4;
-    options.ChallengeTokenExpiresMs = 60000;
-    options.CaptchaTokenExpiresMs = 300000;
+    // Default configuration for CAPTCHAs without specific type
+    options.Default.ChallengeCount = 1000;
+    options.Default.ChallengeSize = 32;
+    options.Default.ChallengeDifficulty = 4;
+    options.Default.ChallengeTokenExpiresMs = 60000;
+    options.Default.CaptchaTokenExpiresMs = 120000;
+
+    // Configuration for specific CAPTCHA types
+    options.TypeConfigs = new Dictionary<string, PowCapConfig>()
+    {
+        ["login"] = new PowCapConfig
+        {
+            ChallengeCount = 1000,
+            ChallengeSize = 32,
+            ChallengeDifficulty = 5,
+            ChallengeTokenExpiresMs = 60000,
+            CaptchaTokenExpiresMs = 120000
+        },
+        ["form"] = new PowCapConfig
+        {
+            ChallengeCount = 100,
+            ChallengeSize = 16,
+            ChallengeDifficulty = 3,
+            ChallengeTokenExpiresMs = 120000,
+            CaptchaTokenExpiresMs = 600000
+        }
+    };
 });
 ```
 
-      
+
 3. Map CAPTCHA endpoints
 ```csharp
 app.MapPowCapServer();
@@ -52,8 +74,10 @@ app.MapPowCapServer();
 
 This will expose the following endpoints:
 
-- POST /api/captcha/challenge – Generate a new CAPTCHA challenge.
-- POST /api/captcha/redeem – Redeem a solved CAPTCHA challenge.
+- POST /api/captcha/challenge – Generate a new CAPTCHA challenge with default configuration.
+- POST /api/captcha/{type}/challenge – Generate a new CAPTCHA challenge with configuration specific to the type.
+- POST /api/captcha/redeem – Redeem a solved CAPTCHA challenge with default configuration.
+- POST /api/captcha/{type}/redeem – Redeem a solved CAPTCHA challenge with configuration specific to the type.
 
 
 ## 🗃️ Storage and Caching
@@ -89,13 +113,21 @@ For more information on available `IDistributedCache` implementations, please re
 ## 📐 Integration with Frontend
 please refer to the official documentation of [@cap.js/widget](https://capjs.js.org/guide/widget.html) for instructions on how to embed and configure the CAPTCHA widget in your web application.
 
-Example:
+Example for default CAPTCHA type:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script>
 
 <cap-widget id="cap" data-cap-api-endpoint="/api/captcha/"></cap-widget>
 ```
+
+Example for specific CAPTCHA type (e.g. login):
+```html
+<script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script>
+
+<cap-widget id="cap" data-cap-api-endpoint="/api/captcha/login/"></cap-widget>
+```
+
 You can listen to the solve event to obtain the generated token and proceed with your form submission or API calls.
 
 
@@ -145,7 +177,7 @@ public class LoginRequest
 ```
 
 - The `ICaptchaService` is injected via constructor injection.
-- The `ValidateCaptchaToken` method is used to verify the token submitted by the client.
+- The `ValidateCaptchaTokenAsync` method is used to verify the token submitted by the client.
 - This helps prevent bot abuse on critical endpoints such as login, registration, or form submission.
 
 
