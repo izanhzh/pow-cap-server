@@ -1,10 +1,17 @@
+using PowCapServer;
 using PowCapServer.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddPowCapServer();
+builder.Services.AddPowCapServer(options =>
+{
+    options.TypeConfigs = new Dictionary<string, PowCapConfig>
+    {
+        ["login"] = new PowCapConfig { ChallengeDifficulty = 5 }
+    };
+});
 //builder.Services.AddStackExchangeRedisCache(options =>
 //{
 //    options.Configuration = "localhost:6379"; // Redis server configuration

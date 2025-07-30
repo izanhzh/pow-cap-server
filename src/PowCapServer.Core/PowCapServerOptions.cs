@@ -1,29 +1,30 @@
+using System.Collections.Generic;
+
 namespace PowCapServer;
 
 public class PowCapServerOptions
 {
     /// <summary>
-    /// Number of challenges to generate
+    /// Default configuration for not specified PoW Captcha types
     /// </summary>
-    public int ChallengeCount { get; set; }
+    public PowCapConfig Default { get; set; } = new PowCapConfig();
 
     /// <summary>
-    /// Size of each challenge in bytes
+    /// Dictionary of configurations for different types of PoW Captcha
     /// </summary>
-    public int ChallengeSize { get; set; }
+    public Dictionary<string, PowCapConfig>? TypeConfigs { get; set; }
 
     /// <summary>
-    /// Difficulty level of the challenge
+    /// Gets the configuration for a specific type of PoW Captcha.
     /// </summary>
-    public int ChallengeDifficulty { get; set; }
-
-    /// <summary>
-    /// Time in milliseconds until the challenge token expires
-    /// </summary>
-    public long ChallengeTokenExpiresMs { get; set; }
-
-    /// <summary>
-    /// Time in milliseconds until the captcha token expires
-    /// </summary>
-    public long CaptchaTokenExpiresMs { get; set; }
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public PowCapConfig? GetPowCapConfig(string? type)
+    {
+        if (TypeConfigs == null || type == null || !TypeConfigs.TryGetValue(type, out var config))
+        {
+            return null;
+        }
+        return config;
+    }
 }

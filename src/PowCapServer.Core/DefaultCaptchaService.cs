@@ -22,13 +22,25 @@ public class DefaultCaptchaService : ICaptchaService
         _captchaStore = captchaStore;
     }
 
-    public virtual async Task<ChallengeTokenInfo> CreateChallengeAsync(CancellationToken cancellationToken = default)
+    public virtual Task<ChallengeTokenInfo> CreateChallengeAsync(CancellationToken cancellationToken = default)
     {
+        return InternalCreateChallengeAsync(_powCapServerOptions.Value.Default, cancellationToken);
+    }
+
+    public virtual Task<ChallengeTokenInfo> CreateChallengeAsync(string? type, CancellationToken cancellationToken = default)
+    {
+        return InternalCreateChallengeAsync(_powCapServerOptions.Value.GetPowCapConfig(type), cancellationToken);
+    }
+
+    protected virtual async Task<ChallengeTokenInfo> InternalCreateChallengeAsync(PowCapConfig? powCapConfig, CancellationToken cancellationToken = default)
+    {
+        powCapConfig ??= _powCapServerOptions.Value.Default;
+
         await _captchaStore.CleanExpiredTokensAsync(cancellationToken).ConfigureAwait(false);
 
-        var challenge = new Challenge(_powCapServerOptions.Value.ChallengeCount, _powCapServerOptions.Value.ChallengeSize, _powCapServerOptions.Value.ChallengeDifficulty);
+        var challenge = new Challenge(powCapConfig.ChallengeCount, powCapConfig.ChallengeSize, powCapConfig.ChallengeDifficulty);
         var token = RandomUtil.ToHexString(RandomUtil.RandomBytes(25));
-        var expires = DateTimeOffset.Now.ToUnixTimeMilliseconds() + _powCapServerOptions.Value.ChallengeTokenExpiresMs;
+        var expires = DateTimeOffset.Now.ToUnixTimeMilliseconds() + powCapConfig.ChallengeTokenExpiresMs;
 
         var challengeTokenInfo = new ChallengeTokenInfo(challenge, token, expires);
 
@@ -37,8 +49,20 @@ public class DefaultCaptchaService : ICaptchaService
         return challengeTokenInfo;
     }
 
-    public virtual async Task<RedeemChallengeResult> RedeemChallengeAsync(ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
+    public virtual Task<RedeemChallengeResult> RedeemChallengeAsync(ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
     {
+        return InternalRedeemChallengeAsync(_powCapServerOptions.Value.Default, challengeSolution, cancellationToken);
+    }
+
+    public virtual Task<RedeemChallengeResult> RedeemChallengeAsync(string? type, ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
+    {
+        return InternalRedeemChallengeAsync(_powCapServerOptions.Value.GetPowCapConfig(type), challengeSolution, cancellationToken);
+    }
+
+    protected virtual async Task<RedeemChallengeResult> InternalRedeemChallengeAsync(PowCapConfig? powCapConfig, ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
+    {
+        powCapConfig ??= _powCapServerOptions.Value.Default;
+
         if (challengeSolution == null)
         {
             return RedeemChallengeResult.Error("Invalid redeem challenge request");
@@ -76,7 +100,7 @@ public class DefaultCaptchaService : ICaptchaService
         }
 
         var vertoken = RandomUtil.ToHexString(RandomUtil.RandomBytes(15));
-        var expires = DateTimeOffset.Now.ToUnixTimeMilliseconds() + _powCapServerOptions.Value.CaptchaTokenExpiresMs;
+        var expires = DateTimeOffset.Now.ToUnixTimeMilliseconds() + powCapConfig.CaptchaTokenExpiresMs;
         var hash = DigestUtil.Sha256Hex(vertoken);
         var id = RandomUtil.ToHexString(RandomUtil.RandomBytes(8));
 
