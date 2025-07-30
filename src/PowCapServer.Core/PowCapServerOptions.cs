@@ -17,8 +17,11 @@ public class PowCapServerOptions
     /// <summary>
     /// Gets the configuration for a specific type of PoW Captcha.
     /// </summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
+    /// <param name="type">The type of PoW Captcha for which the configuration is requested. If null, no specific type is queried.</param>
+    /// <returns>
+    /// Returns the configuration for the specified type if it exists in <see cref="TypeConfigs"/>. 
+    /// Returns null if <see cref="TypeConfigs"/> is null, the specified type is null, or the type is not found in the dictionary.
+    /// </returns>
     public PowCapConfig? GetPowCapConfig(string? type)
     {
         if (TypeConfigs == null || type == null || !TypeConfigs.TryGetValue(type, out var config))
