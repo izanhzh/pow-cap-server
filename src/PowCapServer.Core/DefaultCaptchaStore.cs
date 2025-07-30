@@ -11,9 +11,10 @@ namespace PowCapServer;
 
 public class DefaultCaptchaStore : ICaptchaStore
 {
+    public const string ChallengeTokenCachePrefix = "Captcha:ChallengeToken:";
+    public const string CaptchaTokenCachePrefix = "Captcha:CaptchaToken:";
+
     private readonly IDistributedCache _distributedCache;
-    private readonly string _challengeTokenCachePrefix = "Captcha:ChallengeToken:";
-    private readonly string _captchaTokenCachePrefix = "Captcha:CaptchaToken:";
 
     public DefaultCaptchaStore(IDistributedCache distributedCache)
     {
@@ -43,12 +44,12 @@ public class DefaultCaptchaStore : ICaptchaStore
         };
         using var stream = new MemoryStream();
         await JsonSerializer.SerializeAsync(stream, challengeTokenInfo, cancellationToken: cancellationToken).ConfigureAwait(false);
-        await _distributedCache.SetAsync($"{_challengeTokenCachePrefix}{challengeTokenInfo.Token}", stream.ToArray(), options, cancellationToken).ConfigureAwait(false);
+        await _distributedCache.SetAsync($"{ChallengeTokenCachePrefix}{challengeTokenInfo.Token}", stream.ToArray(), options, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual async Task<ChallengeTokenInfo?> GetChallengeTokenInfoAsync(string challengeToken, CancellationToken cancellationToken = default)
     {
-        var value = await _distributedCache.GetAsync($"{_challengeTokenCachePrefix}{challengeToken}", cancellationToken).ConfigureAwait(false);
+        var value = await _distributedCache.GetAsync($"{ChallengeTokenCachePrefix}{challengeToken}", cancellationToken).ConfigureAwait(false);
         if (value == null)
         {
             return null;
@@ -64,7 +65,7 @@ public class DefaultCaptchaStore : ICaptchaStore
             throw new ArgumentNullException(nameof(challengeTokenInfo));
         }
 
-        await _distributedCache.RemoveAsync($"{_challengeTokenCachePrefix}{challengeTokenInfo.Token}", cancellationToken).ConfigureAwait(false);
+        await _distributedCache.RemoveAsync($"{ChallengeTokenCachePrefix}{challengeTokenInfo.Token}", cancellationToken).ConfigureAwait(false);
     }
 
     public virtual async Task SaveCaptchaTokenInfoAsync(CaptchaTokenInfo captchaTokenInfo, CancellationToken cancellationToken = default)
@@ -81,12 +82,12 @@ public class DefaultCaptchaStore : ICaptchaStore
 
         using var stream = new MemoryStream();
         await JsonSerializer.SerializeAsync(stream, captchaTokenInfo, cancellationToken: cancellationToken).ConfigureAwait(false);
-        await _distributedCache.SetAsync($"{_captchaTokenCachePrefix}{captchaTokenInfo.Token}", stream.ToArray(), options, cancellationToken).ConfigureAwait(false);
+        await _distributedCache.SetAsync($"{CaptchaTokenCachePrefix}{captchaTokenInfo.Token}", stream.ToArray(), options, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual async Task<CaptchaTokenInfo?> GetCaptchaTokenInfoAsync(string captchaToken, CancellationToken cancellationToken = default)
     {
-        var value = await _distributedCache.GetAsync($"{_captchaTokenCachePrefix}{captchaToken}", cancellationToken).ConfigureAwait(false);
+        var value = await _distributedCache.GetAsync($"{CaptchaTokenCachePrefix}{captchaToken}", cancellationToken).ConfigureAwait(false);
         if (value == null)
         {
             return null;
@@ -102,6 +103,6 @@ public class DefaultCaptchaStore : ICaptchaStore
             throw new ArgumentNullException(nameof(captchaTokenInfo));
         }
 
-        await _distributedCache.RemoveAsync($"{_captchaTokenCachePrefix}{captchaTokenInfo.Token}", cancellationToken).ConfigureAwait(false);
+        await _distributedCache.RemoveAsync($"{CaptchaTokenCachePrefix}{captchaTokenInfo.Token}", cancellationToken).ConfigureAwait(false);
     }
 }
