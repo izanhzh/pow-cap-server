@@ -25,6 +25,13 @@ public class CaptchaController : Controller
         return Ok(challengeTokenInfo);
     }
 
+    [HttpPost("{type}/challenge")]
+    public async Task<IActionResult> Challenge(string type, CancellationToken cancellationToken = default)
+    {
+        var challengeTokenInfo = await _captchaService.CreateChallengeAsync(type, cancellationToken).ConfigureAwait(false);
+        return Ok(challengeTokenInfo);
+    }
+
     [HttpPost("redeem")]
     public async Task<IActionResult> Redeem([FromBody] ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
     {
@@ -34,6 +41,18 @@ public class CaptchaController : Controller
         }
 
         var result = await _captchaService.RedeemChallengeAsync(challengeSolution, cancellationToken).ConfigureAwait(false);
+        return Ok(result);
+    }
+
+    [HttpPost("{type}/redeem")]
+    public async Task<IActionResult> Redeem(string type, [FromBody] ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
+    {
+        if (challengeSolution == null)
+        {
+            return BadRequest("Invalid request");
+        }
+
+        var result = await _captchaService.RedeemChallengeAsync(type, challengeSolution, cancellationToken).ConfigureAwait(false);
         return Ok(result);
     }
 

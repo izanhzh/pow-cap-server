@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PowCapServer;
 
 namespace AspNetCore3_1;
 
@@ -19,7 +21,13 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddRazorPages();
-        services.AddPowCapServer();
+        services.AddPowCapServer(options =>
+        {
+            options.TypeConfigs = new Dictionary<string, PowCapConfig>
+            {
+                ["login"] = new PowCapConfig { ChallengeDifficulty = 5 }
+            };
+        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

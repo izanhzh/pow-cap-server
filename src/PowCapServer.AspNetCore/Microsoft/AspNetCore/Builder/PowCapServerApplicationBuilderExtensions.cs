@@ -13,12 +13,23 @@ public static class PowCapServerApplicationBuilderExtensions
         {
             var trimmedPrefix = endpointPrefix?.Trim('/');
             var challengeEndpoint = string.IsNullOrEmpty(trimmedPrefix) ? "/challenge" : $"/{trimmedPrefix}/challenge";
+            var challengeEndpointWithType = string.IsNullOrEmpty(trimmedPrefix) ? "/{type}/challenge" : $"/{trimmedPrefix}/{{type}}/challenge";
             var redeemEndpoint = string.IsNullOrEmpty(trimmedPrefix) ? "/redeem" : $"/{trimmedPrefix}/redeem";
+            var redeemEndpointWithType = string.IsNullOrEmpty(trimmedPrefix) ? "/{type}/redeem" : $"/{trimmedPrefix}/{{type}}/redeem";
 
             endpoints.MapPost(challengeEndpoint, async context =>
             {
                 var captchaService = context.RequestServices.GetRequiredService<ICaptchaService>();
                 var challengeTokenInfo = await captchaService.CreateChallengeAsync().ConfigureAwait(false);
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(challengeTokenInfo).ConfigureAwait(false);
+            });
+
+            endpoints.MapPost(challengeEndpointWithType, async context =>
+            {
+                var captchaService = context.RequestServices.GetRequiredService<ICaptchaService>();
+                var type = context.Request.RouteValues["type"]?.ToString();
+                var challengeTokenInfo = await captchaService.CreateChallengeAsync(type).ConfigureAwait(false);
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsJsonAsync(challengeTokenInfo).ConfigureAwait(false);
             });
@@ -35,6 +46,22 @@ public static class PowCapServerApplicationBuilderExtensions
                 }
 
                 var result = await captchaService.RedeemChallengeAsync(request).ConfigureAwait(false);
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(result).ConfigureAwait(false);
+            });
+
+            endpoints.MapPost(redeemEndpointWithType, async context =>
+            {
+                var captchaService = context.RequestServices.GetRequiredService<ICaptchaService>();
+                var type = context.Request.RouteValues["type"]?.ToString();
+                var request = await context.Request.ReadFromJsonAsync<ChallengeSolution>().ConfigureAwait(false);
+                if (request == null)
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsync("Invalid request").ConfigureAwait(false);
+                    return;
+                }
+                var result = await captchaService.RedeemChallengeAsync(type, request).ConfigureAwait(false);
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsJsonAsync(result).ConfigureAwait(false);
             });
