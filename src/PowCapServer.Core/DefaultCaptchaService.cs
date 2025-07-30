@@ -80,16 +80,16 @@ public class DefaultCaptchaService : ICaptchaService
         var hash = DigestUtil.Sha256Hex(vertoken);
         var id = RandomUtil.ToHexString(RandomUtil.RandomBytes(8));
 
-        await _captchaStore.SaveCaptchaTokenInfoAsync(new CaptchaTokenInfo($"{id}:{hash}", expires), cancellationToken).ConfigureAwait(false);
+        await _captchaStore.SaveCaptchaTokenInfoAsync(new CaptchaTokenInfo($"{id}_{hash}", expires), cancellationToken).ConfigureAwait(false);
 
-        return RedeemChallengeResult.Ok($"{id}:{vertoken}", expires);
+        return RedeemChallengeResult.Ok($"{id}_{vertoken}", expires);
     }
 
     public virtual async Task<bool> ValidateCaptchaTokenAsync(string captchaToken, CancellationToken cancellationToken = default)
     {
         await _captchaStore.CleanExpiredTokensAsync(cancellationToken).ConfigureAwait(false);
 
-        var idAndVertoken = captchaToken?.Split(':');
+        var idAndVertoken = captchaToken?.Split('_');
         if (idAndVertoken == null || idAndVertoken.Length != 2)
         {
             return false;
@@ -97,7 +97,7 @@ public class DefaultCaptchaService : ICaptchaService
 
         var id = idAndVertoken[0];
         var hash = DigestUtil.Sha256Hex(idAndVertoken[1]);
-        var actualToken = $"{id}:{hash}";
+        var actualToken = $"{id}_{hash}";
 
         var captchaTokenInfo = await _captchaStore.GetCaptchaTokenInfoAsync(actualToken, cancellationToken).ConfigureAwait(false);
         if (captchaTokenInfo == null)

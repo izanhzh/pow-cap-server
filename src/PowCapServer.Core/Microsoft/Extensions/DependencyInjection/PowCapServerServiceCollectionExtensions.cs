@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using PowCapServer;
 using PowCapServer.Abstractions;
 
@@ -23,8 +22,8 @@ public static class PowCapServerServiceCollectionExtensions
     public static IServiceCollection AddPowCapServer(this IServiceCollection services, Action<PowCapServerOptions> options)
     {
         services.AddDistributedMemoryCache();
-        services.TryAddSingleton<ICaptchaService, DefaultCaptchaService>();
-        services.TryAddSingleton<ICaptchaStore, DefaultCaptchaStore>();
+        services.AddSingleton<ICaptchaService, DefaultCaptchaService>();
+        services.AddSingleton<ICaptchaStore, DefaultCaptchaStore>();
         services.Configure(options);
         return services;
     }
