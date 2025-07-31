@@ -57,6 +57,7 @@ template: |
 
   $CHANGES
 
-  ## New Contributors
+  ## Assets
 
-  $CONTRIBUTORS
+  - [Source code (zip)](https://github.com/$OWNER/$REPOSITORY/archive/v$RESOLVED_VERSION.zip)
+  - [Source code (tar.gz)](https://github.com/$OWNER/$REPOSITORY/archive/v$RESOLVED_VERSION.tar.gz)
