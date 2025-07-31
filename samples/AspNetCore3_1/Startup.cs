@@ -23,7 +23,7 @@ public class Startup
         services.AddRazorPages();
         services.AddPowCapServer(options =>
         {
-            options.TypeConfigs = new Dictionary<string, PowCapConfig>
+            options.UseCaseConfigs = new Dictionary<string, PowCapConfig>
             {
                 ["login"] = new PowCapConfig { ChallengeDifficulty = 5 }
             };

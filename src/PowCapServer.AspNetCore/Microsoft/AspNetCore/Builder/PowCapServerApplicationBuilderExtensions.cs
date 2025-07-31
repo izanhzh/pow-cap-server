@@ -13,9 +13,9 @@ public static class PowCapServerApplicationBuilderExtensions
         {
             var trimmedPrefix = endpointPrefix?.Trim('/');
             var challengeEndpoint = string.IsNullOrEmpty(trimmedPrefix) ? "/challenge" : $"/{trimmedPrefix}/challenge";
-            var challengeEndpointWithType = string.IsNullOrEmpty(trimmedPrefix) ? "/{type}/challenge" : $"/{trimmedPrefix}/{{type}}/challenge";
+            var challengeEndpointWithUseCase = string.IsNullOrEmpty(trimmedPrefix) ? "/{useCase}/challenge" : $"/{trimmedPrefix}/{{useCase}}/challenge";
             var redeemEndpoint = string.IsNullOrEmpty(trimmedPrefix) ? "/redeem" : $"/{trimmedPrefix}/redeem";
-            var redeemEndpointWithType = string.IsNullOrEmpty(trimmedPrefix) ? "/{type}/redeem" : $"/{trimmedPrefix}/{{type}}/redeem";
+            var redeemEndpointWithUseCase = string.IsNullOrEmpty(trimmedPrefix) ? "/{useCase}/redeem" : $"/{trimmedPrefix}/{{useCase}}/redeem";
 
             endpoints.MapPost(challengeEndpoint, async context =>
             {
@@ -25,11 +25,11 @@ public static class PowCapServerApplicationBuilderExtensions
                 await context.Response.WriteAsJsonAsync(challengeTokenInfo).ConfigureAwait(false);
             });
 
-            endpoints.MapPost(challengeEndpointWithType, async context =>
+            endpoints.MapPost(challengeEndpointWithUseCase, async context =>
             {
                 var captchaService = context.RequestServices.GetRequiredService<ICaptchaService>();
-                var type = context.Request.RouteValues["type"]?.ToString();
-                var challengeTokenInfo = await captchaService.CreateChallengeAsync(type).ConfigureAwait(false);
+                var useCase = context.Request.RouteValues["useCase"]?.ToString();
+                var challengeTokenInfo = await captchaService.CreateChallengeAsync(useCase).ConfigureAwait(false);
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsJsonAsync(challengeTokenInfo).ConfigureAwait(false);
             });
@@ -50,10 +50,10 @@ public static class PowCapServerApplicationBuilderExtensions
                 await context.Response.WriteAsJsonAsync(result).ConfigureAwait(false);
             });
 
-            endpoints.MapPost(redeemEndpointWithType, async context =>
+            endpoints.MapPost(redeemEndpointWithUseCase, async context =>
             {
                 var captchaService = context.RequestServices.GetRequiredService<ICaptchaService>();
-                var type = context.Request.RouteValues["type"]?.ToString();
+                var useCase = context.Request.RouteValues["useCase"]?.ToString();
                 var request = await context.Request.ReadFromJsonAsync<ChallengeSolution>().ConfigureAwait(false);
                 if (request == null)
                 {
@@ -61,7 +61,7 @@ public static class PowCapServerApplicationBuilderExtensions
                     await context.Response.WriteAsync("Invalid request").ConfigureAwait(false);
                     return;
                 }
-                var result = await captchaService.RedeemChallengeAsync(type, request).ConfigureAwait(false);
+                var result = await captchaService.RedeemChallengeAsync(useCase, request).ConfigureAwait(false);
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsJsonAsync(result).ConfigureAwait(false);
             });

@@ -8,11 +8,11 @@ public interface ICaptchaService
 {
     Task<ChallengeTokenInfo> CreateChallengeAsync(CancellationToken cancellationToken = default);
 
-    Task<ChallengeTokenInfo> CreateChallengeAsync(string? type, CancellationToken cancellationToken = default);
+    Task<ChallengeTokenInfo> CreateChallengeAsync(string? useCase, CancellationToken cancellationToken = default);
 
     Task<RedeemChallengeResult> RedeemChallengeAsync(ChallengeSolution challengeSolution, CancellationToken cancellationToken = default);
 
-    Task<RedeemChallengeResult> RedeemChallengeAsync(string? type, ChallengeSolution challengeSolution, CancellationToken cancellationToken = default);
+    Task<RedeemChallengeResult> RedeemChallengeAsync(string? useCase, ChallengeSolution challengeSolution, CancellationToken cancellationToken = default);
 
     Task<bool> ValidateCaptchaTokenAsync(string captchaToken, CancellationToken cancellationToken = default);
 }

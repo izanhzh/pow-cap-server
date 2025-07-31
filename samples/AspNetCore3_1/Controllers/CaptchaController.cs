@@ -25,10 +25,10 @@ public class CaptchaController : Controller
         return Ok(challengeTokenInfo);
     }
 
-    [HttpPost("{type}/challenge")]
-    public async Task<IActionResult> Challenge(string type, CancellationToken cancellationToken = default)
+    [HttpPost("{useCase}/challenge")]
+    public async Task<IActionResult> Challenge(string useCase, CancellationToken cancellationToken = default)
     {
-        var challengeTokenInfo = await _captchaService.CreateChallengeAsync(type, cancellationToken).ConfigureAwait(false);
+        var challengeTokenInfo = await _captchaService.CreateChallengeAsync(useCase, cancellationToken).ConfigureAwait(false);
         return Ok(challengeTokenInfo);
     }
 
@@ -44,15 +44,15 @@ public class CaptchaController : Controller
         return Ok(result);
     }
 
-    [HttpPost("{type}/redeem")]
-    public async Task<IActionResult> Redeem(string type, [FromBody] ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
+    [HttpPost("{useCase}/redeem")]
+    public async Task<IActionResult> Redeem(string useCase, [FromBody] ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
     {
         if (challengeSolution == null)
         {
             return BadRequest("Invalid request");
         }
 
-        var result = await _captchaService.RedeemChallengeAsync(type, challengeSolution, cancellationToken).ConfigureAwait(false);
+        var result = await _captchaService.RedeemChallengeAsync(useCase, challengeSolution, cancellationToken).ConfigureAwait(false);
         return Ok(result);
     }
 

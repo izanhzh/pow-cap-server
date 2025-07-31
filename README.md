@@ -18,8 +18,8 @@ dotnet add package PowCapServer.AspNetCore
 
 
 ## 🧩 Features
-- ✅ Challenge generation (`/api/captcha/challenge` or `/api/captcha/{type}/challenge`)
-- ✅ Challenge redemption (`/api/captcha/redeem` or `/api/captcha/{type}/redeem`)
+- ✅ Challenge generation (`/api/captcha/challenge` or `/api/captcha/{useCase}/challenge`)
+- ✅ Challenge redemption (`/api/captcha/redeem` or `/api/captcha/{useCase}/redeem`)
 - ✅ Token-based CAPTCHA validation
 - ✅ Configurable difficulty, expiration times, and endpoint paths
 - ✅ Built-in token cleanup for expired challenges
@@ -36,15 +36,15 @@ dotnet add package PowCapServer.AspNetCore
 ```csharp
 builder.Services.AddPowCapServer(options =>
 {
-    // Default configuration for CAPTCHAs without specific type
+    // Default configuration for CAPTCHAs without specific use case
     options.Default.ChallengeCount = 1000;
     options.Default.ChallengeSize = 32;
     options.Default.ChallengeDifficulty = 4;
     options.Default.ChallengeTokenExpiresMs = 60000;
     options.Default.CaptchaTokenExpiresMs = 120000;
 
-    // Configuration for specific CAPTCHA types
-    options.TypeConfigs = new Dictionary<string, PowCapConfig>()
+    // Configuration for specific use case CAPTCHA
+    options.UseCaseConfigs = new Dictionary<string, PowCapConfig>()
     {
         ["login"] = new PowCapConfig
         {
@@ -75,9 +75,9 @@ app.MapPowCapServer();
 This will expose the following endpoints:
 
 - POST /api/captcha/challenge – Generate a new CAPTCHA challenge with default configuration.
-- POST /api/captcha/{type}/challenge – Generate a new CAPTCHA challenge with configuration specific to the type.
+- POST /api/captcha/{useCase}/challenge – Generate a new CAPTCHA challenge with configuration specific to the use case.
 - POST /api/captcha/redeem – Redeem a solved CAPTCHA challenge with default configuration.
-- POST /api/captcha/{type}/redeem – Redeem a solved CAPTCHA challenge with configuration specific to the type.
+- POST /api/captcha/{useCase}/redeem – Redeem a solved CAPTCHA challenge with configuration specific to the use case.
 
 
 ## 🗃️ Storage and Caching
@@ -113,7 +113,7 @@ For more information on available `IDistributedCache` implementations, please re
 ## 📐 Integration with Frontend
 please refer to the official documentation of [@cap.js/widget](https://capjs.js.org/guide/widget.html) for instructions on how to embed and configure the CAPTCHA widget in your web application.
 
-Example for default CAPTCHA type:
+Example for default CAPTCHA:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script>
@@ -121,7 +121,7 @@ Example for default CAPTCHA type:
 <cap-widget id="cap" data-cap-api-endpoint="/api/captcha/"></cap-widget>
 ```
 
-Example for specific CAPTCHA type (e.g. login):
+Example for specific use case CAPTCHA (e.g. login):
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script>
 
