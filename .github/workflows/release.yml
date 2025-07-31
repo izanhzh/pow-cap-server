@@ -1,75 +1,19 @@
-# name: Create Release Draft
-
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       tag_name:
-#         description: 'Tag name for the release'
-#         required: true
-#       branchName:
-#           description: 'Branch Name'
-#           required: true
-
-# jobs:
-#   create_release_draft:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
-#         with:
-#           ref: ${{ github.event.inputs.branchName }}
-
-#       - name: Create source code archive (ZIP)
-#         run: |
-#           mkdir -p dist
-#           zip -r dist/source-code.zip . -x "*.git*" -x "*.git/*"
-
-#       - name: Create source code archive (TAR.GZ)
-#         run: |
-#           mkdir -p dist
-#           tar --exclude='.git' -czf dist/source-code.tar.gz .
-
-#       - name: Create Release Draft
-#         id: create_release
-#         uses: actions/create-release@v1
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           tag_name: ${{ github.event.inputs.tag_name }}
-#           release_name: ${{ github.event.inputs.tag_name }}
-#           draft: true
-#           prerelease: false
-
-#       - name: Upload Source Code Archive (ZIP)
-#         uses: actions/upload-release-asset@v1
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           upload_url: ${{ steps.create_release.outputs.upload_url }}
-#           asset_path: ./dist/source-code.zip
-#           asset_name: source-code.zip
-#           asset_content_type: application/zip
-
-#       - name: Upload Source Code Archive (TAR.GZ)
-#         uses: actions/upload-release-asset@v1
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           upload_url: ${{ steps.create_release.outputs.upload_url }}
-#           asset_path: ./dist/source-code.tar.gz
-#           asset_name: source-code.tar.gz
-#           asset_content_type: application/gzip
-
 name: Release Drafter
 
 on:
   push:
+    # branches to consider in the event; optional, defaults to all
     branches:
       - main
       - master
+
+  # pull_request event is required only for autolabeler
   pull_request:
+    # Only following types are handled by the action, but one can default to all as well
     types: [opened, reopened, synchronize]
+  # pull_request_target event is required for autolabeler to support PRs from forks
+  # pull_request_target:
+  #   types: [opened, reopened, synchronize]
 
 permissions:
   contents: read
@@ -77,10 +21,23 @@ permissions:
 jobs:
   update_release_draft:
     permissions:
+      # write permission is required to create a github release
       contents: write
+      # write permission is required for autolabeler
+      # otherwise, read permission is required at least
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      - uses: release-drafter/release-drafter@v5
+      # (Optional) GitHub Enterprise requires GHE_HOST variable set
+      #- name: Set GHE_HOST
+      #  run: |
+      #    echo "GHE_HOST=${GITHUB_SERVER_URL##https:\/\/}" >> $GITHUB_ENV
+
+      # Drafts your next Release notes as Pull Requests are merged into "master"
+      - uses: release-drafter/release-drafter@v6
+        # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
+        # with:
+        #   config-name: my-config.yml
+        #   disable-autolabeler: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
