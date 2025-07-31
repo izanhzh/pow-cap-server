@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddPowCapServer(options =>
 {
-    options.TypeConfigs = new Dictionary<string, PowCapConfig>
+    options.UseCaseConfigs = new Dictionary<string, PowCapConfig>
     {
         ["login"] = new PowCapConfig { ChallengeDifficulty = 5 }
     };

@@ -27,9 +27,9 @@ public class DefaultCaptchaService : ICaptchaService
         return InternalCreateChallengeAsync(_powCapServerOptions.Value.Default, cancellationToken);
     }
 
-    public virtual Task<ChallengeTokenInfo> CreateChallengeAsync(string? type, CancellationToken cancellationToken = default)
+    public virtual Task<ChallengeTokenInfo> CreateChallengeAsync(string? useCase, CancellationToken cancellationToken = default)
     {
-        return InternalCreateChallengeAsync(_powCapServerOptions.Value.GetPowCapConfig(type), cancellationToken);
+        return InternalCreateChallengeAsync(_powCapServerOptions.Value.GetPowCapConfig(useCase), cancellationToken);
     }
 
     protected virtual async Task<ChallengeTokenInfo> InternalCreateChallengeAsync(PowCapConfig? powCapConfig, CancellationToken cancellationToken = default)
@@ -54,9 +54,9 @@ public class DefaultCaptchaService : ICaptchaService
         return InternalRedeemChallengeAsync(_powCapServerOptions.Value.Default, challengeSolution, cancellationToken);
     }
 
-    public virtual Task<RedeemChallengeResult> RedeemChallengeAsync(string? type, ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
+    public virtual Task<RedeemChallengeResult> RedeemChallengeAsync(string? useCase, ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
     {
-        return InternalRedeemChallengeAsync(_powCapServerOptions.Value.GetPowCapConfig(type), challengeSolution, cancellationToken);
+        return InternalRedeemChallengeAsync(_powCapServerOptions.Value.GetPowCapConfig(useCase), challengeSolution, cancellationToken);
     }
 
     protected virtual async Task<RedeemChallengeResult> InternalRedeemChallengeAsync(PowCapConfig? powCapConfig, ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
