@@ -8,27 +8,49 @@ template: |
   {% endfor %}
   {% endfor %}
 
+  {% if contributors.size > 0 %}
   ## Contributors
+
   {% for contributor in contributors %}
   - [@{{ contributor.login }}]({{ contributor.html_url }})
   {% endfor %}
+  {% endif %}
 
 categories:
-  - title: "Enhancements"
+  - title: "🚀 Features"
     labels:
+      - "feature"
       - "enhancement"
-  - title: "Bug Fixes"
+  - title: "🐛 Bug Fixes"
     labels:
+      - "fix"
+      - "bugfix"
       - "bug"
-  - title: "Documentation"
+  - title: "📚 Documentation"
     labels:
       - "documentation"
-  - title: "Refactoring"
+      - "docs"
+  - title: "♻️ Refactoring"
     labels:
       - "refactor"
-  - title: "Performance Improvements"
+      - "refactoring"
+  - title: "⚡ Performance Improvements"
     labels:
       - "performance"
-  - title: "Chores"
+  - title: "🧪 Tests"
+    labels:
+      - "test"
+      - "tests"
+  - title: "🧰 Maintenance"
     labels:
       - "chore"
+      - "maintenance"
+      - "dependencies"
+  - title: "🏗️ Build System"
+    labels:
+      - "build"
+      - "ci"
+      - "cd"
+
+exclude-labels:
+  - "skip-changelog"
