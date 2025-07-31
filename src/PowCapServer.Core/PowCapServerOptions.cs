@@ -10,7 +10,7 @@ public class PowCapServerOptions
     public PowCapConfig Default { get; set; } = new PowCapConfig();
 
     /// <summary>
-    /// Dictionary of configurations for different use case of PoW Captcha
+    /// Dictionary of configurations for different use cases of PoW Captcha
     /// </summary>
     public Dictionary<string, PowCapConfig>? UseCaseConfigs { get; set; }
 
