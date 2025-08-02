@@ -7,7 +7,7 @@ This is a  **.NET Core server implementation** of the open-source project [tiago
 The project is split into two main libraries, which will be published to NuGet:
 
 - PowCapServer.Core – Core logic and services for CAPTCHA generation and validation.
-- PowCapServer.AspNetCore – ASP.NET Core integration for exposing CAPTCHA endpoints as REST APIs.
+- PowCapServer.AspNetCore – ASP.NET Core integration for exposing CAPTCHA endpoints as HTTP APIs.
 
 You can install them via:
 
