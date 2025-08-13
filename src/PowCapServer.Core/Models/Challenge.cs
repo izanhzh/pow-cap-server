@@ -2,6 +2,15 @@ namespace PowCapServer.Models;
 
 public record Challenge
 {
+#if NETSTANDARD2_0
+    public Challenge()
+    {
+        C = 0;
+        S = 0;
+        D = 0;
+    }
+#endif
+
     public Challenge(int c, int s, int d)
     {
         C = c;

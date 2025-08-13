@@ -1,7 +1,15 @@
-﻿namespace PowCapServer.Models;
+namespace PowCapServer.Models;
 
 public record CaptchaTokenInfo
 {
+#if NETSTANDARD2_0
+    public CaptchaTokenInfo()
+    {
+        Token = string.Empty;
+        Expires = 0;
+    }
+#endif
+
     public CaptchaTokenInfo(string token, long expires)
     {
         Token = token;
