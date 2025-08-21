@@ -105,8 +105,6 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 ```
 
-**Important: Call `AddStackExchangeRedisCache` after `AddPowCapServer` to override the default in-memory cache implementation.**
-
 For more information on available `IDistributedCache` implementations, please refer to the [Microsoft Documentation](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed).
 
 
