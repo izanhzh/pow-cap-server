@@ -9,7 +9,6 @@ public static class PowCapServerServiceCollectionExtensions
 {
     public static IServiceCollection AddPowCapServer(this IServiceCollection services, Action<PowCapServerOptions>? options = null)
     {
-        services.AddDistributedMemoryCache();
         services.TryAddSingleton<ICaptchaService, DefaultCaptchaService>();
         services.TryAddSingleton<ICaptchaStore, DefaultCaptchaStore>();
         services.Configure<PowCapServerOptions>(opts => options?.Invoke(opts));
