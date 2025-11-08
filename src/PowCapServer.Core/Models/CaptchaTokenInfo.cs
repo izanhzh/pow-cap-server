@@ -1,6 +1,6 @@
 namespace PowCapServer.Models;
 
-public record CaptchaTokenInfo
+public class CaptchaTokenInfo
 {
 #if NETSTANDARD2_0
     public CaptchaTokenInfo()

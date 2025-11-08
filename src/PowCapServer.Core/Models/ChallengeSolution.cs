@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace PowCapServer.Models;
 
-public record ChallengeSolution
+public class ChallengeSolution
 {
 #if NETSTANDARD2_0
     public ChallengeSolution()

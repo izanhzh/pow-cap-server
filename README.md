@@ -1,6 +1,6 @@
 # What is PowCapServer
 
-This is a  **.NET Core server implementation** of the open-source project [tiagorangel1/cap](https://github.com/tiagorangel1/cap). based on the Proof-of-Work (PoW) mechanism. It provides a lightweight and non-intrusive CAPTCHA solution that can be used to prevent bot abuse and spam submissions.
+This is a  **.NET Core server implementation** of the open-source project [tiagozip/cap](https://github.com/tiagozip/cap). based on the Proof-of-Work (PoW) mechanism. It provides a lightweight and non-intrusive CAPTCHA solution that can be used to prevent bot abuse and spam submissions.
 
 
 ## 📦 NuGet Packages
