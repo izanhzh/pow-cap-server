@@ -1,6 +1,6 @@
 namespace PowCapServer.Models;
 
-public record Challenge
+public class Challenge
 {
 #if NETSTANDARD2_0
     public Challenge()
