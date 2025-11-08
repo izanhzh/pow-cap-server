@@ -9,7 +9,7 @@
     <PackageProjectUrl>https://github.com/izanhzh/pow-cap-server</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/izanhzh/pow-cap-server.git</RepositoryUrl>
-    <Description>This project is a .NET Core server-side implementation of the open-source project tiagorangel1/cap, based on the Proof-of-Work (PoW) mechanism.</Description>
+    <Description>This project is a .NET Core server-side implementation of the open-source project tiagozip/cap, based on the Proof-of-Work (PoW) mechanism.</Description>
     <RootNamespace>PowCapServer</RootNamespace>
   </PropertyGroup>
 
