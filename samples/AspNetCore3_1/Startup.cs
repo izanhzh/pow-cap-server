@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AspNetCore3_1.Serializers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,7 @@ public class Startup
         services.AddRazorPages();
         services.TryAddSingleton<ICaptchaService, DefaultCaptchaService>();
         services.TryAddSingleton<ICaptchaStore, DefaultCaptchaStore>();
+        services.TryAddSingleton<ISerializer, DefaultSerializer>();
         services.Configure<PowCapServerOptions>(options =>
         {
             options.UseCaseConfigs = new Dictionary<string, PowCapConfig>
