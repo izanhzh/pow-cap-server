@@ -11,6 +11,7 @@ public static class PowCapServerServiceCollectionExtensions
     {
         services.TryAddSingleton<ICaptchaService, DefaultCaptchaService>();
         services.TryAddSingleton<ICaptchaStore, DefaultCaptchaStore>();
+        services.TryAddTransient<ISerializer, DefaultSerializer>();
         services.Configure<PowCapServerOptions>(opts => options?.Invoke(opts));
         return services;
     }

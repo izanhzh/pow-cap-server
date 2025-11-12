@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
@@ -15,10 +13,12 @@ public class DefaultCaptchaStore : ICaptchaStore
     public const string CaptchaTokenCachePrefix = "Captcha:CaptchaToken:";
 
     private readonly IDistributedCache _distributedCache;
+    private readonly ISerializer _serializer;
 
-    public DefaultCaptchaStore(IDistributedCache distributedCache)
+    public DefaultCaptchaStore(IDistributedCache distributedCache, ISerializer serializer)
     {
         _distributedCache = distributedCache;
+        _serializer = serializer;
     }
 
     public virtual Task CleanExpiredTokensAsync(CancellationToken cancellationToken = default)
@@ -42,9 +42,8 @@ public class DefaultCaptchaStore : ICaptchaStore
         {
             AbsoluteExpiration = DateTimeOffset.FromUnixTimeMilliseconds(challengeTokenInfo.Expires)
         };
-        using var stream = new MemoryStream();
-        await JsonSerializer.SerializeAsync(stream, challengeTokenInfo, cancellationToken: cancellationToken).ConfigureAwait(false);
-        await _distributedCache.SetAsync($"{ChallengeTokenCachePrefix}{challengeTokenInfo.Token}", stream.ToArray(), options, cancellationToken).ConfigureAwait(false);
+        var value = await _serializer.SerializeAsync(challengeTokenInfo, cancellationToken).ConfigureAwait(false);
+        await _distributedCache.SetAsync($"{ChallengeTokenCachePrefix}{challengeTokenInfo.Token}", value, options, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual async Task<ChallengeTokenInfo?> GetChallengeTokenInfoAsync(string challengeToken, CancellationToken cancellationToken = default)
@@ -54,8 +53,7 @@ public class DefaultCaptchaStore : ICaptchaStore
         {
             return null;
         }
-        using var stream = new MemoryStream(value);
-        return await JsonSerializer.DeserializeAsync<ChallengeTokenInfo>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return await _serializer.DeserializeAsync<ChallengeTokenInfo>(value, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual async Task DeleteChallengeTokenInfoAsync(ChallengeTokenInfo challengeTokenInfo, CancellationToken cancellationToken = default)
@@ -80,9 +78,8 @@ public class DefaultCaptchaStore : ICaptchaStore
             AbsoluteExpiration = DateTimeOffset.FromUnixTimeMilliseconds(captchaTokenInfo.Expires)
         };
 
-        using var stream = new MemoryStream();
-        await JsonSerializer.SerializeAsync(stream, captchaTokenInfo, cancellationToken: cancellationToken).ConfigureAwait(false);
-        await _distributedCache.SetAsync($"{CaptchaTokenCachePrefix}{captchaTokenInfo.Token}", stream.ToArray(), options, cancellationToken).ConfigureAwait(false);
+        var value = await _serializer.SerializeAsync(captchaTokenInfo, cancellationToken).ConfigureAwait(false);
+        await _distributedCache.SetAsync($"{CaptchaTokenCachePrefix}{captchaTokenInfo.Token}", value, options, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual async Task<CaptchaTokenInfo?> GetCaptchaTokenInfoAsync(string captchaToken, CancellationToken cancellationToken = default)
@@ -92,8 +89,7 @@ public class DefaultCaptchaStore : ICaptchaStore
         {
             return null;
         }
-        using var stream = new MemoryStream(value);
-        return await JsonSerializer.DeserializeAsync<CaptchaTokenInfo>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return await _serializer.DeserializeAsync<CaptchaTokenInfo>(value, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual async Task DeleteCaptchaTokenInfoAsync(CaptchaTokenInfo captchaTokenInfo, CancellationToken cancellationToken = default)
