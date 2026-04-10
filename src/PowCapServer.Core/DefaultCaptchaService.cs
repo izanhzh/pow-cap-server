@@ -84,6 +84,11 @@ public class DefaultCaptchaService : ICaptchaService
 
         var challenge = challengeTokenInfo.Challenge;
 
+        if (challengeSolution.Solutions == null || challengeSolution.Solutions.Count != challenge.C)
+        {
+            return RedeemChallengeResult.Error("Invalid challenge solution");
+        }
+
         var isValid = Enumerable.Range(0, challenge.C).All(i =>
         {
             var salt = RandomUtil.Prng($"{challengeSolution.Token}{i + 1}", challenge.S);
