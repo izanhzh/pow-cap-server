@@ -8,6 +8,9 @@ namespace Microsoft.AspNetCore.Builder;
 
 public static class PowCapServerApplicationBuilderExtensions
 {
+    private const string ErrorInvalidUseCase = "Invalid use case";
+    private const string ErrorInvalidRequest = "Invalid request";
+
     private static readonly Regex ValidUseCasePattern = new(@"^[a-zA-Z0-9_-]{1,50}$", RegexOptions.Compiled);
 
     public static IApplicationBuilder MapPowCapServer(this IApplicationBuilder app, string endpointPrefix = "/api/captcha")
@@ -34,7 +37,7 @@ public static class PowCapServerApplicationBuilderExtensions
                 if (useCase == null || !ValidUseCasePattern.IsMatch(useCase))
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    await context.Response.WriteAsync("Invalid use case").ConfigureAwait(false);
+                    await context.Response.WriteAsync(ErrorInvalidUseCase).ConfigureAwait(false);
                     return;
                 }
 
@@ -51,7 +54,7 @@ public static class PowCapServerApplicationBuilderExtensions
                 if (request == null)
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    await context.Response.WriteAsync("Invalid request").ConfigureAwait(false);
+                    await context.Response.WriteAsync(ErrorInvalidRequest).ConfigureAwait(false);
                     return;
                 }
 
@@ -66,7 +69,7 @@ public static class PowCapServerApplicationBuilderExtensions
                 if (useCase == null || !ValidUseCasePattern.IsMatch(useCase))
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    await context.Response.WriteAsync("Invalid use case").ConfigureAwait(false);
+                    await context.Response.WriteAsync(ErrorInvalidUseCase).ConfigureAwait(false);
                     return;
                 }
 
@@ -75,7 +78,7 @@ public static class PowCapServerApplicationBuilderExtensions
                 if (request == null)
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    await context.Response.WriteAsync("Invalid request").ConfigureAwait(false);
+                    await context.Response.WriteAsync(ErrorInvalidRequest).ConfigureAwait(false);
                     return;
                 }
 

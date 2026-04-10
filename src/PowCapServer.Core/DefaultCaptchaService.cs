@@ -11,6 +11,10 @@ namespace PowCapServer;
 
 public class DefaultCaptchaService : ICaptchaService
 {
+    private const string ErrorInvalidRequest = "Invalid redeem challenge request";
+    private const string ErrorChallengeExpired = "Challenge expired";
+    private const string ErrorInvalidSolution = "Invalid challenge solution";
+
     private readonly IOptions<PowCapServerOptions> _powCapServerOptions;
     private readonly ICaptchaStore _captchaStore;
 
@@ -65,19 +69,19 @@ public class DefaultCaptchaService : ICaptchaService
 
         if (challengeSolution == null)
         {
-            return RedeemChallengeResult.Error("Invalid redeem challenge request");
+            return RedeemChallengeResult.Error(ErrorInvalidRequest);
         }
         await _captchaStore.CleanExpiredTokensAsync(cancellationToken).ConfigureAwait(false);
 
         var challengeTokenInfo = await _captchaStore.GetChallengeTokenInfoAsync(challengeSolution.Token, cancellationToken).ConfigureAwait(false);
         if (challengeTokenInfo == null)
         {
-            return RedeemChallengeResult.Error("Challenge expired");
+            return RedeemChallengeResult.Error(ErrorChallengeExpired);
         }
         if (challengeTokenInfo.Expires < DateTimeOffset.Now.ToUnixTimeMilliseconds())
         {
             await _captchaStore.DeleteChallengeTokenInfoAsync(challengeTokenInfo, cancellationToken).ConfigureAwait(false);
-            return RedeemChallengeResult.Error("Challenge expired");
+            return RedeemChallengeResult.Error(ErrorChallengeExpired);
         }
 
         await _captchaStore.DeleteChallengeTokenInfoAsync(challengeTokenInfo, cancellationToken).ConfigureAwait(false);
@@ -86,7 +90,7 @@ public class DefaultCaptchaService : ICaptchaService
 
         if (challengeSolution.Solutions == null || challengeSolution.Solutions.Count != challenge.C)
         {
-            return RedeemChallengeResult.Error("Invalid challenge solution");
+            return RedeemChallengeResult.Error(ErrorInvalidSolution);
         }
 
         var isValid = Enumerable.Range(0, challenge.C).All(i =>
@@ -101,7 +105,7 @@ public class DefaultCaptchaService : ICaptchaService
 
         if (!isValid)
         {
-            return RedeemChallengeResult.Error("Invalid challenge solution");
+            return RedeemChallengeResult.Error(ErrorInvalidSolution);
         }
 
         var vertoken = RandomUtil.ToHexString(RandomUtil.RandomBytes(15));
