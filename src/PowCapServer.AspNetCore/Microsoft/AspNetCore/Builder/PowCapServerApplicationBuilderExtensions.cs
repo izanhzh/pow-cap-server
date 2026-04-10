@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using PowCapServer.Abstractions;
@@ -7,6 +8,8 @@ namespace Microsoft.AspNetCore.Builder;
 
 public static class PowCapServerApplicationBuilderExtensions
 {
+    private static readonly Regex ValidUseCasePattern = new(@"^[a-zA-Z0-9_-]{1,50}$", RegexOptions.Compiled);
+
     public static IApplicationBuilder MapPowCapServer(this IApplicationBuilder app, string endpointPrefix = "/api/captcha")
     {
         app.UseEndpoints(endpoints =>
@@ -27,8 +30,15 @@ public static class PowCapServerApplicationBuilderExtensions
 
             endpoints.MapPost(challengeEndpointWithUseCase, async context =>
             {
-                var captchaService = context.RequestServices.GetRequiredService<ICaptchaService>();
                 var useCase = context.Request.RouteValues["useCase"]?.ToString();
+                if (useCase == null || !ValidUseCasePattern.IsMatch(useCase))
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsync("Invalid use case").ConfigureAwait(false);
+                    return;
+                }
+
+                var captchaService = context.RequestServices.GetRequiredService<ICaptchaService>();
                 var challengeTokenInfo = await captchaService.CreateChallengeAsync(useCase).ConfigureAwait(false);
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsJsonAsync(challengeTokenInfo).ConfigureAwait(false);
@@ -52,8 +62,15 @@ public static class PowCapServerApplicationBuilderExtensions
 
             endpoints.MapPost(redeemEndpointWithUseCase, async context =>
             {
-                var captchaService = context.RequestServices.GetRequiredService<ICaptchaService>();
                 var useCase = context.Request.RouteValues["useCase"]?.ToString();
+                if (useCase == null || !ValidUseCasePattern.IsMatch(useCase))
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsync("Invalid use case").ConfigureAwait(false);
+                    return;
+                }
+
+                var captchaService = context.RequestServices.GetRequiredService<ICaptchaService>();
                 var request = await context.Request.ReadFromJsonAsync<ChallengeSolution>().ConfigureAwait(false);
                 if (request == null)
                 {
@@ -61,6 +78,7 @@ public static class PowCapServerApplicationBuilderExtensions
                     await context.Response.WriteAsync("Invalid request").ConfigureAwait(false);
                     return;
                 }
+
                 var result = await captchaService.RedeemChallengeAsync(useCase, request).ConfigureAwait(false);
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsJsonAsync(result).ConfigureAwait(false);
