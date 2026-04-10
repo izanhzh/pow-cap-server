@@ -13,9 +13,9 @@ public sealed class PowCapServerOptionsValidator : IValidateOptions<PowCapServer
 
         if (options.UseCaseConfigs != null)
         {
-            foreach (var (useCase, config) in options.UseCaseConfigs)
+            foreach (var kvp in options.UseCaseConfigs)
             {
-                ValidateConfig(useCase, config, errors);
+                ValidateConfig(kvp.Key, kvp.Value, errors);
             }
         }
 
