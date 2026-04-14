@@ -15,7 +15,7 @@ public static class PowCapServerApplicationBuilderExtensions
     private const string ErrorInvalidUseCase = "Invalid use case";
     private const string ErrorInvalidRequest = "Invalid request";
 
-    private static readonly Regex ValidUseCasePattern = new(@"^[a-zA-Z0-9_-]{1,50}$", RegexOptions.Compiled);
+    private static readonly Regex _validUseCasePattern = new(@"^[a-zA-Z0-9_-]{1,50}$", RegexOptions.Compiled);
 
     public static IApplicationBuilder MapPowCapServer(this IApplicationBuilder app, Action<PowCapServerEndpointOptions>? configure = null)
     {
@@ -43,7 +43,7 @@ public static class PowCapServerApplicationBuilderExtensions
                 endpoints.MapPost(challengeEndpointWithUseCase, async context =>
                 {
                     var useCase = context.Request.RouteValues["useCase"]?.ToString();
-                    if (useCase == null || !ValidUseCasePattern.IsMatch(useCase))
+                    if (useCase == null || !_validUseCasePattern.IsMatch(useCase))
                     {
                         context.Response.StatusCode = StatusCodes.Status400BadRequest;
                         await context.Response.WriteAsync(ErrorInvalidUseCase).ConfigureAwait(false);
@@ -69,8 +69,8 @@ public static class PowCapServerApplicationBuilderExtensions
                         return;
                     }
 
-                    var logger = options.RequestScopeFactory != null ? context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(PowCapServerApplicationBuilderExtensions)) : null;
-                    using var scope = logger?.BeginScope(options.RequestScopeFactory!(context));
+                    var logger = options.RequestLogScopeFactory != null ? context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(PowCapServerApplicationBuilderExtensions)) : null;
+                    using var scope = logger?.BeginScope(options.RequestLogScopeFactory!(context));
                     var result = await captchaService.RedeemChallengeAsync(request).ConfigureAwait(false);
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsJsonAsync(result).ConfigureAwait(false);
@@ -81,7 +81,7 @@ public static class PowCapServerApplicationBuilderExtensions
                     context.Features.Get<IHttpMaxRequestBodySizeFeature>()?.MaxRequestBodySize = options.MaxRedeemBodySize; // IDE0031 fix
 
                     var useCase = context.Request.RouteValues["useCase"]?.ToString();
-                    if (useCase == null || !ValidUseCasePattern.IsMatch(useCase))
+                    if (useCase == null || !_validUseCasePattern.IsMatch(useCase))
                     {
                         context.Response.StatusCode = StatusCodes.Status400BadRequest;
                         await context.Response.WriteAsync(ErrorInvalidUseCase).ConfigureAwait(false);
@@ -97,9 +97,8 @@ public static class PowCapServerApplicationBuilderExtensions
                         return;
                     }
 
-                    var loggerFactory = options.RequestScopeFactory != null ? context.RequestServices.GetService<ILoggerFactory>() : null;
-                    var logger = loggerFactory?.CreateLogger(nameof(PowCapServerApplicationBuilderExtensions));
-                    using var scope = logger != null ? logger.BeginScope(options.RequestScopeFactory!(context)) : null;
+                    var logger = options.RequestLogScopeFactory != null ? context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(PowCapServerApplicationBuilderExtensions)) : null;
+                    using var scope = logger?.BeginScope(options.RequestLogScopeFactory!(context));
                     var result = await captchaService.RedeemChallengeAsync(useCase, request).ConfigureAwait(false);
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsJsonAsync(result).ConfigureAwait(false);
