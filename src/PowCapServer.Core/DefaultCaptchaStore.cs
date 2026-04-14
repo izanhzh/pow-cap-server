@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 using PowCapServer.Abstractions;
 using PowCapServer.Models;
 
@@ -9,16 +10,28 @@ namespace PowCapServer;
 
 public class DefaultCaptchaStore : ICaptchaStore
 {
-    public const string ChallengeTokenCachePrefix = "Captcha:ChallengeToken:";
-    public const string CaptchaTokenCachePrefix = "Captcha:CaptchaToken:";
+    public const string DefaultCachePrefix = "Captcha:";
+    public const string ChallengeTokenCacheKey = "ChallengeToken:";
+    public const string CaptchaTokenCacheKey = "CaptchaToken:";
+
+    private readonly string ChallengeTokenCachePrefix;
+    private readonly string CaptchaTokenCachePrefix;
 
     private readonly IDistributedCache _distributedCache;
     private readonly ISerializer _serializer;
 
-    public DefaultCaptchaStore(IDistributedCache distributedCache, ISerializer serializer)
+    public DefaultCaptchaStore(IDistributedCache distributedCache, ISerializer serializer, IOptions<PowCapServerOptions> options)
     {
         _distributedCache = distributedCache;
         _serializer = serializer;
+        var cacheKeyPrefix = options.Value.CacheKeyPrefix?.Trim();
+        if (string.IsNullOrWhiteSpace(cacheKeyPrefix))
+        {
+            cacheKeyPrefix = DefaultCachePrefix;
+        }
+
+        ChallengeTokenCachePrefix = $"{cacheKeyPrefix}{ChallengeTokenCacheKey}";
+        CaptchaTokenCachePrefix = $"{cacheKeyPrefix}{CaptchaTokenCacheKey}";
     }
 
     public virtual Task CleanExpiredTokensAsync(CancellationToken cancellationToken = default)

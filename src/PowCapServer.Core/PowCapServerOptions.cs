@@ -15,6 +15,11 @@ public class PowCapServerOptions
     public Dictionary<string, PowCapConfig>? UseCaseConfigs { get; set; }
 
     /// <summary>
+    /// Prefix used for all cache keys. Defaults to "Captcha:".
+    /// </summary>
+    public string CacheKeyPrefix { get; set; } = DefaultCaptchaStore.DefaultCachePrefix;
+
+    /// <summary>
     /// Gets the configuration for a specific use case of PoW Captcha.
     /// </summary>
     /// <param name="useCase">The use case of PoW Captcha for which the configuration is requested. If null, no specific use case is queried.</param>
