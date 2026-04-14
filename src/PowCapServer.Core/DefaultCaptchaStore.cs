@@ -24,8 +24,8 @@ public class DefaultCaptchaStore : ICaptchaStore
     {
         _distributedCache = distributedCache;
         _serializer = serializer;
-        var cacheKeyPrefix = options.Value.CacheKeyPrefix;
-        if (string.IsNullOrEmpty(cacheKeyPrefix))
+        var cacheKeyPrefix = options.Value.CacheKeyPrefix?.Trim();
+        if (string.IsNullOrWhiteSpace(cacheKeyPrefix))
         {
             cacheKeyPrefix = DefaultCachePrefix;
         }
