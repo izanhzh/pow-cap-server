@@ -69,8 +69,8 @@ public static class PowCapServerApplicationBuilderExtensions
                         return;
                     }
 
-                    var logger = options.RequestScopeFactory != null ? context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(PowCapServerApplicationBuilderExtensions)) : null;
-                    using var scope = logger?.BeginScope(options.RequestScopeFactory!(context));
+                    var logger = options.RequestLogScopeFactory != null ? context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(PowCapServerApplicationBuilderExtensions)) : null;
+                    using var scope = logger?.BeginScope(options.RequestLogScopeFactory!(context));
                     var result = await captchaService.RedeemChallengeAsync(request).ConfigureAwait(false);
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsJsonAsync(result).ConfigureAwait(false);
@@ -97,9 +97,9 @@ public static class PowCapServerApplicationBuilderExtensions
                         return;
                     }
 
-                    var loggerFactory = options.RequestScopeFactory != null ? context.RequestServices.GetService<ILoggerFactory>() : null;
+                    var loggerFactory = options.RequestLogScopeFactory != null ? context.RequestServices.GetService<ILoggerFactory>() : null;
                     var logger = loggerFactory?.CreateLogger(nameof(PowCapServerApplicationBuilderExtensions));
-                    using var scope = logger != null ? logger.BeginScope(options.RequestScopeFactory!(context)) : null;
+                    using var scope = logger != null ? logger.BeginScope(options.RequestLogScopeFactory!(context)) : null;
                     var result = await captchaService.RedeemChallengeAsync(useCase, request).ConfigureAwait(false);
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsJsonAsync(result).ConfigureAwait(false);

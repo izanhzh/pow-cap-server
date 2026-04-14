@@ -22,7 +22,7 @@ public class PowCapServerEndpointOptions
     /// When <c>null</c> (default), no scope is created.
     /// Requires the logging provider to have scopes enabled to be effective.
     /// </summary>
-    public Func<HttpContext, Dictionary<string, object?>>? RequestScopeFactory { get; set; }
+    public Func<HttpContext, Dictionary<string, object?>>? RequestLogScopeFactory { get; set; }
 
     /// <summary>
     /// Maximum allowed size in bytes for the body of redeem requests.
