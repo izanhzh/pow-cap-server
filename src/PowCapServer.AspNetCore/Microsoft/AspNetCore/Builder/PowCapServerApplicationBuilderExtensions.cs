@@ -97,8 +97,9 @@ public static class PowCapServerApplicationBuilderExtensions
                         return;
                     }
 
-                    var logger = options.RequestScopeFactory != null ? context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(PowCapServerApplicationBuilderExtensions)) : null;
-                    using var scope = logger?.BeginScope(options.RequestScopeFactory!(context));
+                    var loggerFactory = options.RequestScopeFactory != null ? context.RequestServices.GetService<ILoggerFactory>() : null;
+                    var logger = loggerFactory?.CreateLogger(nameof(PowCapServerApplicationBuilderExtensions));
+                    using var scope = logger != null ? logger.BeginScope(options.RequestScopeFactory!(context)) : null;
                     var result = await captchaService.RedeemChallengeAsync(useCase, request).ConfigureAwait(false);
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsJsonAsync(result).ConfigureAwait(false);
