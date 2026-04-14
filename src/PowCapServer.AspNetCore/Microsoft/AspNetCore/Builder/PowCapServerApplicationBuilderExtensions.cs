@@ -15,7 +15,7 @@ public static class PowCapServerApplicationBuilderExtensions
     private const string ErrorInvalidUseCase = "Invalid use case";
     private const string ErrorInvalidRequest = "Invalid request";
 
-    private static readonly Regex ValidUseCasePattern = new(@"^[a-zA-Z0-9_-]{1,50}$", RegexOptions.Compiled);
+    private static readonly Regex _validUseCasePattern = new(@"^[a-zA-Z0-9_-]{1,50}$", RegexOptions.Compiled);
 
     public static IApplicationBuilder MapPowCapServer(this IApplicationBuilder app, Action<PowCapServerEndpointOptions>? configure = null)
     {
@@ -43,7 +43,7 @@ public static class PowCapServerApplicationBuilderExtensions
                 endpoints.MapPost(challengeEndpointWithUseCase, async context =>
                 {
                     var useCase = context.Request.RouteValues["useCase"]?.ToString();
-                    if (useCase == null || !ValidUseCasePattern.IsMatch(useCase))
+                    if (useCase == null || !_validUseCasePattern.IsMatch(useCase))
                     {
                         context.Response.StatusCode = StatusCodes.Status400BadRequest;
                         await context.Response.WriteAsync(ErrorInvalidUseCase).ConfigureAwait(false);
@@ -81,7 +81,7 @@ public static class PowCapServerApplicationBuilderExtensions
                     context.Features.Get<IHttpMaxRequestBodySizeFeature>()?.MaxRequestBodySize = options.MaxRedeemBodySize; // IDE0031 fix
 
                     var useCase = context.Request.RouteValues["useCase"]?.ToString();
-                    if (useCase == null || !ValidUseCasePattern.IsMatch(useCase))
+                    if (useCase == null || !_validUseCasePattern.IsMatch(useCase))
                     {
                         context.Response.StatusCode = StatusCodes.Status400BadRequest;
                         await context.Response.WriteAsync(ErrorInvalidUseCase).ConfigureAwait(false);
