@@ -55,15 +55,15 @@ public class DefaultCaptchaService : ICaptchaService
 
     public virtual Task<RedeemChallengeResult> RedeemChallengeAsync(ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
     {
-        return InternalRedeemChallengeAsync(_powCapServerOptions.Value.Default, challengeSolution, cancellationToken);
+        return InternalRedeemChallengeAsync(_powCapServerOptions.Value.Default, null, challengeSolution, cancellationToken);
     }
 
     public virtual Task<RedeemChallengeResult> RedeemChallengeAsync(string? useCase, ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
     {
-        return InternalRedeemChallengeAsync(_powCapServerOptions.Value.GetPowCapConfig(useCase), challengeSolution, cancellationToken);
+        return InternalRedeemChallengeAsync(_powCapServerOptions.Value.GetPowCapConfig(useCase), useCase, challengeSolution, cancellationToken);
     }
 
-    protected virtual async Task<RedeemChallengeResult> InternalRedeemChallengeAsync(PowCapConfig? powCapConfig, ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
+    protected virtual async Task<RedeemChallengeResult> InternalRedeemChallengeAsync(PowCapConfig? powCapConfig, string? useCase, ChallengeSolution challengeSolution, CancellationToken cancellationToken = default)
     {
         powCapConfig ??= _powCapServerOptions.Value.Default;
 
@@ -113,12 +113,25 @@ public class DefaultCaptchaService : ICaptchaService
         var hash = DigestUtil.Sha256Hex(vertoken);
         var id = RandomUtil.ToHexString(RandomUtil.RandomBytes(8));
 
-        await _captchaStore.SaveCaptchaTokenInfoAsync(new CaptchaTokenInfo($"{id}_{hash}", expires), cancellationToken).ConfigureAwait(false);
+        await _captchaStore.SaveCaptchaTokenInfoAsync(new CaptchaTokenInfo($"{id}_{hash}", expires, useCase), cancellationToken).ConfigureAwait(false);
 
         return RedeemChallengeResult.Ok($"{id}_{vertoken}", expires);
     }
 
-    public virtual async Task<bool> ValidateCaptchaTokenAsync(string captchaToken, CancellationToken cancellationToken = default)
+    public virtual Task<bool> ValidateCaptchaTokenAsync(string captchaToken, CancellationToken cancellationToken = default)
+    {
+        // Use-case-blind validation: kept for backwards compatibility.
+        // Issue #20: callers gating sensitive flows should switch to the
+        // use-case-aware overload below.
+        return InternalValidateCaptchaTokenAsync(captchaToken, expectedUseCase: null, enforceUseCase: false, cancellationToken);
+    }
+
+    public virtual Task<bool> ValidateCaptchaTokenAsync(string? useCase, string captchaToken, CancellationToken cancellationToken = default)
+    {
+        return InternalValidateCaptchaTokenAsync(captchaToken, expectedUseCase: useCase, enforceUseCase: true, cancellationToken);
+    }
+
+    protected virtual async Task<bool> InternalValidateCaptchaTokenAsync(string captchaToken, string? expectedUseCase, bool enforceUseCase, CancellationToken cancellationToken)
     {
         await _captchaStore.CleanExpiredTokensAsync(cancellationToken).ConfigureAwait(false);
 
@@ -139,6 +152,16 @@ public class DefaultCaptchaService : ICaptchaService
         }
         if (captchaTokenInfo.Expires < DateTimeOffset.Now.ToUnixTimeMilliseconds())
         {
+            await _captchaStore.DeleteCaptchaTokenInfoAsync(captchaTokenInfo, cancellationToken).ConfigureAwait(false);
+            return false;
+        }
+
+        if (enforceUseCase
+            && !string.Equals(captchaTokenInfo.UseCase, expectedUseCase, StringComparison.Ordinal))
+        {
+            // Token is otherwise valid but was redeemed under a different
+            // use case. Burn it (single-use semantics still apply) and
+            // refuse: pre-#20 the caller would have gotten true here.
             await _captchaStore.DeleteCaptchaTokenInfoAsync(captchaTokenInfo, cancellationToken).ConfigureAwait(false);
             return false;
         }

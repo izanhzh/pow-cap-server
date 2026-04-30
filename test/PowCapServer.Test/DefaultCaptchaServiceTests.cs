@@ -123,11 +123,100 @@ public class DefaultCaptchaServiceTests
         Assert.False(secondUse); // token was consumed
     }
 
+    // --- Issue #20: use-case scoping ---
+
+    [Fact]
+    public async Task ValidateCaptchaTokenAsync_WithMatchingUseCase_ReturnsTrue()
+    {
+        var challengeToken = await StoreValidChallengeAsync(challengeCount: 0, token: "uc_match_token");
+        var redeemResult = await _service.RedeemChallengeAsync("login", new ChallengeSolution(challengeToken, new List<int>()));
+        Assert.True(redeemResult.Success);
+
+        var ok = await _service.ValidateCaptchaTokenAsync("login", redeemResult.Token!);
+
+        Assert.True(ok);
+    }
+
+    [Fact]
+    public async Task ValidateCaptchaTokenAsync_WithDifferentUseCase_ReturnsFalse()
+    {
+        // Token redeemed under low-friction "form" use case must not validate
+        // for a high-friction "login" use case (issue #20).
+        var challengeToken = await StoreValidChallengeAsync(challengeCount: 0, token: "uc_xuse_token");
+        var redeemResult = await _service.RedeemChallengeAsync("form", new ChallengeSolution(challengeToken, new List<int>()));
+        Assert.True(redeemResult.Success);
+
+        var ok = await _service.ValidateCaptchaTokenAsync("login", redeemResult.Token!);
+
+        Assert.False(ok);
+    }
+
+    [Fact]
+    public async Task ValidateCaptchaTokenAsync_DefaultUseCaseDoesNotMatchExplicitUseCase()
+    {
+        // Token redeemed under no use case (default config) must not validate
+        // when the caller is gating on an explicit use case.
+        var challengeToken = await StoreValidChallengeAsync(challengeCount: 0, token: "uc_default_token");
+        var redeemResult = await _service.RedeemChallengeAsync(new ChallengeSolution(challengeToken, new List<int>()));
+        Assert.True(redeemResult.Success);
+
+        var ok = await _service.ValidateCaptchaTokenAsync("login", redeemResult.Token!);
+
+        Assert.False(ok);
+    }
+
+    [Fact]
+    public async Task ValidateCaptchaTokenAsync_DefaultUseCaseMatchesNullUseCaseOverload()
+    {
+        // The use-case-aware overload with null requires the token to have
+        // been redeemed under the default (no use case) configuration.
+        var challengeToken = await StoreValidChallengeAsync(challengeCount: 0, token: "uc_default_match_token");
+        var redeemResult = await _service.RedeemChallengeAsync(new ChallengeSolution(challengeToken, new List<int>()));
+        Assert.True(redeemResult.Success);
+
+        var ok = await _service.ValidateCaptchaTokenAsync(useCase: null, redeemResult.Token!);
+
+        Assert.True(ok);
+    }
+
+    [Fact]
+    public async Task ValidateCaptchaTokenAsync_LegacyOverloadStaysUseCaseBlind()
+    {
+        // The original ValidateCaptchaTokenAsync(token) overload retains its
+        // pre-#20 behavior so existing consumers that haven't yet adopted
+        // the use-case-aware overload continue to work.
+        var challengeToken = await StoreValidChallengeAsync(challengeCount: 0, token: "uc_legacy_token");
+        var redeemResult = await _service.RedeemChallengeAsync("form", new ChallengeSolution(challengeToken, new List<int>()));
+        Assert.True(redeemResult.Success);
+
+        var ok = await _service.ValidateCaptchaTokenAsync(redeemResult.Token!);
+
+        Assert.True(ok);
+    }
+
+    [Fact]
+    public async Task ValidateCaptchaTokenAsync_UseCaseMismatchStillBurnsToken()
+    {
+        // A use-case mismatch must still consume the token (single-use
+        // semantics), so an attacker can't probe it against multiple
+        // use cases until they find a match.
+        var challengeToken = await StoreValidChallengeAsync(challengeCount: 0, token: "uc_burn_token");
+        var redeemResult = await _service.RedeemChallengeAsync("form", new ChallengeSolution(challengeToken, new List<int>()));
+        Assert.True(redeemResult.Success);
+
+        var firstWrong = await _service.ValidateCaptchaTokenAsync("login", redeemResult.Token!);
+        Assert.False(firstWrong);
+
+        // Even though the token was originally good for the "form" use case,
+        // the mismatched probe consumed it.
+        var secondCorrect = await _service.ValidateCaptchaTokenAsync("form", redeemResult.Token!);
+        Assert.False(secondCorrect);
+    }
+
     // --- Helpers ---
 
-    private async Task<string> StoreValidChallengeAsync(int challengeCount)
+    private async Task<string> StoreValidChallengeAsync(int challengeCount, string token = "test_challenge_token")
     {
-        const string token = "test_challenge_token";
         var info = new ChallengeTokenInfo(
             new Challenge(challengeCount, 32, 1),
             token,
