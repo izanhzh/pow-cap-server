@@ -2,14 +2,12 @@ namespace PowCapServer.Models;
 
 public class CaptchaTokenInfo
 {
-#if NETSTANDARD2_0
     public CaptchaTokenInfo()
     {
         Token = string.Empty;
         Expires = 0;
         UseCase = null;
     }
-#endif
 
     public CaptchaTokenInfo(string token, long expires)
         : this(token, expires, null)
