@@ -2,12 +2,14 @@ namespace PowCapServer.Models;
 
 public class ChallengeTokenInfo
 {
+#if NETSTANDARD2_0
     public ChallengeTokenInfo()
     {
         Challenge = new Challenge(0, 0, 0);
         Token = string.Empty;
         Expires = 0;
     }
+#endif
 
     public ChallengeTokenInfo(Challenge challenge, string token, long expires)
     {
