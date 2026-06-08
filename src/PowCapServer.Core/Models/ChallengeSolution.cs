@@ -4,13 +4,11 @@ namespace PowCapServer.Models;
 
 public class ChallengeSolution
 {
-#if NETSTANDARD2_0
     public ChallengeSolution()
     {
         Token = string.Empty;
-        Solutions = new List<int>();
+        Solutions = [];
     }
-#endif
 
     public ChallengeSolution(string token, IList<int> solutions)
     {
